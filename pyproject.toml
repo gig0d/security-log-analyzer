@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "security-log-analyzer"
+version = "1.0.0"
+description = "Local defensive SSH and HTTP log analysis with evidence-linked alerts"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [{name = "Giovanny Alvarado Barrantes", email = "gioab0411@gmail.com"}]
+dependencies = [
+  "sqlalchemy>=2.0.36,<3",
+  "typer>=0.15,<1",
+  "rich>=13.9,<15",
+  "streamlit>=1.45,<2",
+  "plotly>=6,<7",
+  "tzdata>=2025.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<10", "pytest-cov>=6,<8", "ruff>=0.11,<1", "mypy>=1.15,<2"]
+
+[project.scripts]
+security-log-analyzer = "security_log_analyzer.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/security_log_analyzer"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["src/security_log_analyzer"]
+
+[[tool.mypy.overrides]]
+module = ["plotly.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["security_log_analyzer"]
+branch = true
