@@ -1,6 +1,7 @@
 import csv
 import io
 import sqlite3
+from contextlib import closing
 from dataclasses import replace
 from datetime import timedelta
 
@@ -149,16 +150,17 @@ def test_utf8_bom_and_control_characters_in_real_ingestion(tmp_path):
 
 def test_newer_and_unrelated_databases_are_not_modified(tmp_path):
     newer = tmp_path / "future.db"
-    with sqlite3.connect(newer) as connection:
+    with closing(sqlite3.connect(newer)) as connection:
         connection.execute("PRAGMA user_version=99")
     with pytest.raises(ValueError, match="newer"):
         Store(newer)
     unrelated = tmp_path / "unrelated.db"
-    with sqlite3.connect(unrelated) as connection:
+    with closing(sqlite3.connect(unrelated)) as connection:
         connection.execute("CREATE TABLE private_data (id INTEGER)")
+        connection.commit()
     with pytest.raises(ValueError, match="Unrecognized"):
         Store(unrelated)
-    with sqlite3.connect(unrelated) as connection:
+    with closing(sqlite3.connect(unrelated)) as connection:
         assert connection.execute(
             "SELECT name FROM sqlite_master WHERE type='table'"
         ).fetchall() == [("private_data",)]

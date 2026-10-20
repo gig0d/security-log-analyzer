@@ -1,0 +1,21 @@
+# Copy to config.toml and pass --config config.toml to ingest, detect, or rules.
+window_seconds = 300
+brute_force_failures = 5
+spray_accounts = 5
+success_failures = 3
+enumeration_requests = 4
+http_auth_failures = 5
+sensitive_paths = ["/admin", "/.env", "/.git", "/wp-admin", "/config"]
+login_paths = ["/login", "/signin", "/auth"]
+
+# Set ssh_year explicitly when importing yearless syslog. Never infer the current year.
+# ssh_year = 2026
+ssh_timezone = "UTC"
+
+max_record_bytes = 16384
+max_file_bytes = 52428800
+max_total_bytes = 104857600
+max_files = 100
+max_directory_entries = 1000
+max_ingestion_records = 100000
+max_analysis_events = 100000
