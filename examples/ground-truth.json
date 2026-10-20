@@ -1,0 +1,433 @@
+{
+  "schema_version": 1,
+  "seed": 42,
+  "reference_utc": "2026-01-15T12:00:00+00:00",
+  "labels": [
+    {
+      "file": "auth.log",
+      "line": 1,
+      "event_id": "e0eabb8fa10e711ed0caaa862fbf394c379f86d6b0bfdd2453ba1e025b213d03",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 2,
+      "event_id": "f46a9e72ba9b560380da3d4eb0a45bf99c52fa480d3f058c1b7b0af48ea25e4c",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 3,
+      "event_id": "04f4b97d7458d6c6d3ef42fc38a4c0932ca356aea25b917cf22b80466d51c3a5",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 4,
+      "event_id": "8771f27d0a2a0422596fefd35877cfec9c28edbb10e1513b1cc1e289be0347ca",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 5,
+      "event_id": "7947cce4cc7a6b94a8f8b71b1db66e77dad9b76870812eb30a81a4cc55d5a6ea",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 6,
+      "event_id": "ef8f3c5d2bc00c62573ebb7d23a5021e443aca0ac402c7c720139d95315062c9",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 7,
+      "event_id": "61cd21306ec8a019894d3dc933882f6fd514fa6407907e789e22f8fda797c057",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 8,
+      "event_id": "ecaa2ecbbf9c237050687b46e06b83637e37cbd2053bfc11d19642e0f1e37e8f",
+      "scenario": "normal_ssh",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 1,
+      "event_id": "ba5f4f24a563881b62a38ef05689a7e2c9385ef992b16577e6afd135a82768d6",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 2,
+      "event_id": "44dc5fcb38bf7e708ad97f27f4d23279f4d208ccabd26f7728d82bff8fe773ad",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 3,
+      "event_id": "e846934e5752ce8184eb3d1eb67572c40da50b31f842af5b21f5aef411db2809",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 4,
+      "event_id": "4357b3cc8a65e84c5f96c77fc33cb08a342270631ea2b8c321883a7cfc8c86e9",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 5,
+      "event_id": "48c3198a71e281eee6d7b158893cf4041bec6346e7e680a9083bf6f1b26b1a91",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 6,
+      "event_id": "249d918b965f49cf491cd9709d551168ed12517005bff3f2637f3b1fb25ce8d8",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 7,
+      "event_id": "309310bd881cab0dc1312304c37c7923d393c6dee284d546736d54d2a7c6a924",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 8,
+      "event_id": "872bdb09626125b787e2574cf94f1be8b2a11c00135f7f8e2aa6b5fff7b6c799",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 9,
+      "event_id": "d8c2544456f062bd3f33c069af06103db782492b09b81afb8786db2a5ca9e806",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 10,
+      "event_id": "efb71efa92744dadd51e80c7a59275fe88c887007b93b8ee1d33b8b150c51902",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 11,
+      "event_id": "be370a346bdc4f1d5b2cf2d8c6a0095c9ecc398a691dc152f75243c34d50d62e",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 12,
+      "event_id": "17c92e14b76a93688a22123da8d6b2340acf9bb599cb55bbca0ffa444e6d841d",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 13,
+      "event_id": "6fdf7ad2bd0e85b73893bc02038b832de622dda04fd976f9ca4b35d7c05fa312",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 14,
+      "event_id": "ea736b632956c8173da3b7534bca5a499a8b0a2ca1202301aeb2c3ef2522467f",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 15,
+      "event_id": "50c9a41e8b077036fcc51d24fc230922b61a35d1eddbe29dfac24addbda164b4",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 16,
+      "event_id": "73e403cc3b9e3f583eed76d820f6377dc57df35bb283b825d50a3ba7bf00cfcf",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 17,
+      "event_id": "4fa1815bd646c67f66f2cec659495d85893e3578c262c0a17e47f714bcb24937",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 18,
+      "event_id": "9065deaf032a7fd1b3223fbb56c27999ce5b35f4278309bf787fca0aa10c8e8e",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 19,
+      "event_id": "2c1ee4ee1f5125010e4e3e1f742c7acf277770249e802c7b94418583c94bd679",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "access.log",
+      "line": 20,
+      "event_id": "9daf4ea02ef6f25b3bb66b5eae7bbe5a5f7b71fff11cd18abd47f9685572f91e",
+      "scenario": "normal_http",
+      "expected_rules": []
+    },
+    {
+      "file": "auth.log",
+      "line": 9,
+      "event_id": "f2a7e9e77f6d6868b610f90ced1796780a1b0c9e7bfe96c440b0438c1dbed351",
+      "scenario": "ssh_brute_force",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 10,
+      "event_id": "f893f9b5113b32179e2c22d4b0245d229d5ae6e09e04a62e880999fd0ac4f352",
+      "scenario": "ssh_password_spray",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE",
+        "SSH_PASSWORD_SPRAY"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 11,
+      "event_id": "66a09834c7950ddf129091b1f25c8b462d3a887b063ec9112ec482a43297d9e3",
+      "scenario": "ssh_brute_force",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 12,
+      "event_id": "7a59b37411e70aa424457ada420584636eb9002dea69f5e87631516f6ecd3812",
+      "scenario": "ssh_password_spray",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE",
+        "SSH_PASSWORD_SPRAY"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 13,
+      "event_id": "4de9d0ed6c1854f624d1a719099f26c15856c57f5fe11e57a05f8dadfaaa689a",
+      "scenario": "ssh_brute_force",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 14,
+      "event_id": "7fd93d663daae48d40f41ffcc19b0211ad2d19f2d2b554899210cf4517d687d4",
+      "scenario": "ssh_password_spray",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE",
+        "SSH_PASSWORD_SPRAY"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 15,
+      "event_id": "36510087e18620dc269bbe11732baae1638d7bf077507d7a9f166cc4f770035b",
+      "scenario": "ssh_brute_force",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 16,
+      "event_id": "3c0f27f43a7c884fac2fc61902a52d740817a24cb0877f8fc439e44951f9d650",
+      "scenario": "ssh_password_spray",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE",
+        "SSH_PASSWORD_SPRAY"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 17,
+      "event_id": "82fd1db057c89cfb937ba077c16438cc7c5aae585d0688c652fffac2e7dcbe41",
+      "scenario": "ssh_brute_force",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 18,
+      "event_id": "8bad3ca155cbc2cf24e1c0976ca01638e056a00e5dc4c094e6fa67dd82da2a6f",
+      "scenario": "ssh_password_spray",
+      "expected_rules": [
+        "SSH_BRUTE_FORCE",
+        "SSH_PASSWORD_SPRAY"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 19,
+      "event_id": "c87e6435232ada4831e451ecb6cc67bac6d104b302a4eaa75960b001a0f99628",
+      "scenario": "ssh_success_after_failure",
+      "expected_rules": [
+        "SSH_SUCCESS_AFTER_FAILURE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 20,
+      "event_id": "f437be7976b023c236c76a0aff850acd2d7da123b156ddc6a3a9088b93650056",
+      "scenario": "ssh_success_after_failure",
+      "expected_rules": [
+        "SSH_SUCCESS_AFTER_FAILURE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 21,
+      "event_id": "d409bc7b3284f203a357c3672ff09e3a1d7acae160147b2b188a72d72d6db218",
+      "scenario": "ssh_success_after_failure",
+      "expected_rules": [
+        "SSH_SUCCESS_AFTER_FAILURE"
+      ]
+    },
+    {
+      "file": "auth.log",
+      "line": 22,
+      "event_id": "4f44843ffd30dc509ee53c39bd4e5b6b5d6feede585171d38a386a755eefa298",
+      "scenario": "ssh_success_after_failure",
+      "expected_rules": [
+        "SSH_SUCCESS_AFTER_FAILURE"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 21,
+      "event_id": "263035094b0892b6639a4b74112ec7691aa56d2147b19f9bb79e3f567002a863",
+      "scenario": "http_enumeration",
+      "expected_rules": [
+        "HTTP_ENUMERATION"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 22,
+      "event_id": "2da55016a6bdc6fe20844c3fa9e4d8d2bb62431e4d0bf6fed15a6f32faac112b",
+      "scenario": "http_enumeration",
+      "expected_rules": [
+        "HTTP_ENUMERATION"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 23,
+      "event_id": "887f7806876985294cd1f9d2db15c0532c30cef6b71688a80297a27d7c5da9c6",
+      "scenario": "http_enumeration",
+      "expected_rules": [
+        "HTTP_ENUMERATION"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 24,
+      "event_id": "020f749d0a047f936942e067a1987b2c35ade23d36e1cbc031f603ccf9ccccb5",
+      "scenario": "http_enumeration",
+      "expected_rules": [
+        "HTTP_ENUMERATION"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 25,
+      "event_id": "049c1b07bfc0d9dc5d8d7b45d820f7b9419f5385a2f6ba2646b940917852771a",
+      "scenario": "http_suspicious_request",
+      "expected_rules": [
+        "HTTP_SUSPICIOUS_REQUEST"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 26,
+      "event_id": "331b8ede9caed88228e2cbcbb67c8f8ca04fc2b1773d7cb8c17d6fb95c7ac3a4",
+      "scenario": "http_suspicious_request",
+      "expected_rules": [
+        "HTTP_SUSPICIOUS_REQUEST"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 27,
+      "event_id": "ce7f6365f902cb5dca31c6cfe49e80df8178aa6c777ba1ff3911d0775f0dafdd",
+      "scenario": "http_auth_abuse",
+      "expected_rules": [
+        "HTTP_AUTH_ABUSE"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 28,
+      "event_id": "93dc20c82abd48af4485c3ffad0cfda0ac428457863558c3b176ebefcd979f7f",
+      "scenario": "http_auth_abuse",
+      "expected_rules": [
+        "HTTP_AUTH_ABUSE"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 29,
+      "event_id": "6a835da9fc51736974dee6c28ecebe5a73504a2dd401379b3424f6fbfe35c9af",
+      "scenario": "http_auth_abuse",
+      "expected_rules": [
+        "HTTP_AUTH_ABUSE"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 30,
+      "event_id": "97396803ebfd7fc5955d3ce5c0be891556e111156fd8f870796ed033a002944b",
+      "scenario": "http_auth_abuse",
+      "expected_rules": [
+        "HTTP_AUTH_ABUSE"
+      ]
+    },
+    {
+      "file": "access.log",
+      "line": 31,
+      "event_id": "f2a040b04537f39585e44994b287688534f3ca958c73c8e2e366b063ee9fa1f6",
+      "scenario": "http_auth_abuse",
+      "expected_rules": [
+        "HTTP_AUTH_ABUSE"
+      ]
+    }
+  ]
+}
