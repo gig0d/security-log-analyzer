@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import ntpath
 import unicodedata
 from datetime import UTC, datetime
 from pathlib import Path
@@ -36,6 +37,8 @@ def output_path(directory: Path, filename: str) -> Path:
     """Confine generated filenames to an explicitly selected output directory."""
     if not filename or Path(filename).name != filename or any(c in filename for c in "/\\:"):
         raise ValueError("Output filename must be a plain filename without path components")
+    if ntpath.isreserved(filename):
+        raise ValueError("Output filename is reserved or invalid on Windows")
     directory = directory.resolve()
     directory.mkdir(parents=True, exist_ok=True)
     target = directory / filename

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, String, create_engine, event, text
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import URL, Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 
@@ -134,6 +134,15 @@ def migrate(engine: Engine) -> None:
         if version > 2:
             raise ValueError("Database schema is newer than this application")
         if version == 0:
+            existing = connection.execute(
+                text(
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+                )
+            ).all()
+            if existing:
+                raise ValueError(
+                    "Unrecognized existing database; select a new application database"
+                )
             names = ("source_files", "ingestion_runs", "events", "source_records", "parse_failures")
             Base.metadata.create_all(connection, tables=[Base.metadata.tables[n] for n in names])
             connection.execute(text("PRAGMA user_version=1"))
@@ -144,12 +153,18 @@ def migrate(engine: Engine) -> None:
 
 class Store:
     def __init__(self, path: Path) -> None:
+        if path.is_symlink() or path.is_junction():
+            raise ValueError("Database path must not be a symbolic link or junction")
         path = path.resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        self.engine = create_engine("sqlite:///" + path.as_posix())
+        self.engine = create_engine(URL.create("sqlite", database=str(path)))
         event.listen(self.engine, "connect", _sqlite_setup)
-        migrate(self.engine)
+        try:
+            migrate(self.engine)
+        except Exception:
+            self.engine.dispose()
+            raise
         self.session = sessionmaker(self.engine, expire_on_commit=False)
 
     def close(self) -> None:

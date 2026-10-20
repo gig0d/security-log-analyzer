@@ -4,7 +4,7 @@ import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,7 @@ class Settings:
     max_files: int = 100
     max_analysis_events: int = 100000
     max_ingestion_records: int = 100000
+    max_directory_entries: int = 1000
 
     def __post_init__(self) -> None:
         for name, value in asdict(self).items():
@@ -38,7 +39,10 @@ class Settings:
             raise ValueError("ssh_year must be between 1970 and 9998")
         if not isinstance(self.ssh_timezone, str):
             raise ValueError("ssh_timezone must be an IANA timezone name")
-        ZoneInfo(self.ssh_timezone)
+        try:
+            ZoneInfo(self.ssh_timezone)
+        except ZoneInfoNotFoundError as exc:
+            raise ValueError("ssh_timezone must name an available IANA timezone") from exc
         for name in ("sensitive_paths", "login_paths"):
             paths = getattr(self, name)
             if not isinstance(paths, tuple) or not paths or len(paths) > 100:

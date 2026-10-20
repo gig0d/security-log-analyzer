@@ -27,6 +27,24 @@ class IngestionSummary:
     errors: list[str] = field(default_factory=list)
 
 
+@dataclass
+class _Budget:
+    byte_limit: int
+    record_limit: int
+    bytes_read: int = 0
+    records: int = 0
+
+    def consume(self, size: int) -> None:
+        self.bytes_read += size
+        if self.bytes_read > self.byte_limit:
+            raise ValueError("Ingestion exhausted the total I/O byte budget")
+
+    def record(self) -> None:
+        self.records += 1
+        if self.records > self.record_limit:
+            raise ValueError("Ingestion exceeds configured total record limit; file rolled back")
+
+
 def discover(path: Path, settings: Settings) -> list[Path]:
     """Read only explicit files or immediate .log/.txt children; never recurse."""
     if path.is_symlink() or path.is_junction():
@@ -36,7 +54,9 @@ def discover(path: Path, settings: Settings) -> list[Path]:
         files = [path]
     elif path.is_dir():
         files = []
-        for entry in path.iterdir():
+        for number, entry in enumerate(path.iterdir(), 1):
+            if number > settings.max_directory_entries:
+                raise ValueError("Directory exceeds configured entry enumeration limit")
             if entry.suffix.lower() in {".log", ".txt"} and entry.is_file():
                 if entry.is_symlink() or entry.is_junction():
                     raise ValueError("Input directory contains linked files")
@@ -61,11 +81,12 @@ def discover(path: Path, settings: Settings) -> list[Path]:
     return files
 
 
-def _digest(path: Path, limit: int) -> str:
+def _digest(path: Path, limit: int, budget: _Budget) -> str:
     digest = hashlib.sha256()
     consumed = 0
     with path.open("rb") as handle:
         while block := handle.read(65536):
+            budget.consume(len(block))
             consumed += len(block)
             if consumed > limit:
                 raise ValueError("File grew beyond configured byte limit")
@@ -80,9 +101,10 @@ def _ingest_file(
     settings: Settings,
     source_type: str,
     host: str | None,
+    budget: _Budget,
 ) -> IngestionSummary:
     summary = IngestionSummary(files=1)
-    fingerprint = _digest(path, settings.max_file_bytes)
+    fingerprint = _digest(path, settings.max_file_bytes, budget)
     source_id = stable_id(
         [
             str(path),
@@ -111,16 +133,15 @@ def _ingest_file(
         with path.open("rb") as handle:
             while raw := handle.readline(settings.max_record_bytes + 1):
                 line_number += 1
-                if line_number > settings.max_ingestion_records:
-                    raise ValueError(
-                        "File exceeds configured record limit; transaction rolled back"
-                    )
+                budget.record()
+                budget.consume(len(raw))
                 summary.records += 1
                 digest.update(raw)
                 consumed += len(raw)
                 oversized = len(raw) > settings.max_record_bytes
                 if oversized and not raw.endswith(b"\n"):
                     while tail := handle.readline(settings.max_record_bytes + 1):
+                        budget.consume(len(tail))
                         consumed += len(tail)
                         digest.update(tail)
                         if consumed > settings.max_file_bytes:
@@ -132,7 +153,7 @@ def _ingest_file(
                 try:
                     if oversized:
                         raise ParseError("Record exceeds configured byte limit")
-                    line = raw.decode("utf-8", errors="strict")
+                    line = raw.decode("utf-8-sig" if line_number == 1 else "utf-8", errors="strict")
                     record = parse_line(line, source_type, settings, host)
                 except (ParseError, UnicodeDecodeError) as exc:
                     summary.failures += 1
@@ -191,13 +212,16 @@ def ingest(
         session.flush()
         run_id = run.id
     summary = IngestionSummary()
+    budget = _Budget(2 * settings.max_total_bytes, settings.max_ingestion_records)
     for file in files:
         try:
-            result = _ingest_file(store, file, run_id, settings, source_type, host)
+            result = _ingest_file(store, file, run_id, settings, source_type, host, budget)
             for name in ("files", "records", "inserted", "duplicates", "failures"):
                 setattr(summary, name, getattr(summary, name) + getattr(result, name))
         except (OSError, ValueError) as exc:
             summary.errors.append(f"{safe_text(file.name)}: {safe_text(str(exc), 300)}")
+            if budget.bytes_read > budget.byte_limit or budget.records > budget.record_limit:
+                break
     with store.session.begin() as session:
         saved = session.get(IngestionRun, run_id)
         assert saved is not None
