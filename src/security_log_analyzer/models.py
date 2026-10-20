@@ -27,7 +27,7 @@ class Status(StrEnum):
 class Event:
     timestamp: datetime
     source_type: str
-    host: str
+    host: str | None
     source_ip: str | None
     username: str | None
     category: str

@@ -24,6 +24,7 @@ class Settings:
     max_total_bytes: int = 104857600
     max_files: int = 100
     max_analysis_events: int = 100000
+    max_ingestion_records: int = 100000
 
     def __post_init__(self) -> None:
         for name, value in asdict(self).items():
