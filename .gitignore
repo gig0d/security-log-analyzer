@@ -18,6 +18,9 @@ htmlcov/
 *.sqlite*
 data/
 reports/
+local-logs/
+exports/
+/config.toml
 *.log
 !examples/*.log
 !src/security_log_analyzer/fixtures/*.log
