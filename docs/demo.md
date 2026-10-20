@@ -10,6 +10,8 @@ $sla = ".\.venv\Scripts\security-log-analyzer.exe"
 The command creates `data/demo-inputs`, imports both sources into `data/demo.db`,
 runs six rules, and emits labeled evaluation. It refuses to overwrite different
 existing inputs. Repeating it against the same dataset inserts no events/alerts.
+The exact former built-in ground-truth manifest is upgraded to version 2 when SSH
+identity gains port/PID attributes. Other modified inputs are still refused.
 Use a fresh or existing demo-only database: evaluation rejects mixed unrelated data.
 
 ## Expected data
@@ -55,6 +57,15 @@ Incident JSON includes the alert, rationale, latest 100 status changes, all evid
 and up to 100 source references per event with total reference counts. Its evidence
 scope is independent of summary-period filters. CSV contains an alert summary with
 formula-safe fields. Filenames must be plain names inside the chosen output directory.
+JSON records all requested filters and table-specific filter/search scope. CSV
+includes the same filter values in `report_filters`. Both interfaces support source,
+IP, severity, status, rule, search, and period filters. Source filters apply to alerts
+through their evidence; event search matches username/path/ID, while alert search
+matches title/IP/ID. Severity/status/rule apply only to alerts. Selected incident
+evidence remains complete regardless of the summary filters.
+
+To add a note without changing the state, call `status` with the current status and
+a nonempty `--note`. Empty same-status requests return `changed: false` in JSON.
 
 ## Dashboard
 

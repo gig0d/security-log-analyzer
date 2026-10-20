@@ -15,9 +15,9 @@ It requires no PowerShell execution-policy change.
 
 Validation date: **2026-10-20**, Windows, Python **3.13.16**.
 
-- **73 passed, 1 skipped**, with no warnings after closing test-owned SQLite handles.
-- **94% combined statement/branch coverage** from 1,173 statements and 330 branches.
-- Ruff lint/format and strict MyPy passed for all 13 application modules.
+- **97 passed, 1 skipped**, including 24 regression cases from the project review.
+- **95% combined statement/branch coverage** from 1,281 statements and 368 branches.
+- Ruff lint/format and strict MyPy passed for all 14 application modules.
 - Hash-locked dependency installation into a clean environment passed.
 - Built wheel installed separately; its installed CLI produced 53 events / 8 alerts.
 - Streamlit AppTest passed navigation, actual metrics, severity filtering, status
@@ -42,6 +42,7 @@ itself needs neither. Linux CI exercises this test.
 | `test_cli_reporting_demo.py` | CLI workflows/exits, reports, deterministic labeled evaluation, overwrite protection |
 | `test_dashboard.py` | Actual Streamlit widget navigation/filter/save operations against temporary databases |
 | `test_security_and_edges.py` | Windows names/traversal/symlinks, global budgets, changed-input rollback, BOM, unrelated DBs, real CSV output, reopen/status |
+| `test_review_regressions.py` | Distinct same-second ports/PIDs, exact duplicate reimports, v2 provenance recovery/rollback, old alert aliases/history, same-status notes through CLI/UI, query plus encodings, complete CSV/JSON filters and source scope |
 
 ## Evaluation method
 
@@ -83,3 +84,20 @@ Remaining gaps include exceptional resource paths, very large report pagination,
 browser-rendered visual behavior, and representative real-log evaluation.
 There is no throughput benchmark, stress certification, live attack test, or full
 browser automation suite. All test payloads are inert local strings.
+
+## Review corrections in 1.0.1
+
+The four findings from the project review have dedicated regressions. Five distinct
+SSH connections in the same second now remain five events and trigger brute-force
+detection, while copied logs still deduplicate. Legacy databases reconstruct those
+connections from stored provenance without rereading original files; historical
+status/notes, detection timestamps, and old alert references survive. Migration
+failure leaves both data and schema/version unchanged. The migration module has
+100% measured statement/branch coverage in this run.
+
+Same-status notes persist through direct calls, CLI, and dashboard interactions;
+empty same-status submissions report no change. HTTP tests distinguish query `+`
+spaces from literal path/percent-encoded plus signs. Report tests check full filter
+metadata, table-specific search semantics, source-scoped alert evidence, CSV context,
+CLI options, and dashboard controls. Built-in old demo labels upgrade safely while
+different user inputs remain protected.

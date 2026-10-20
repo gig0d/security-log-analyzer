@@ -5,12 +5,14 @@ from datetime import datetime
 from typing import Any, cast
 
 from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
 from sqlalchemy.sql.elements import ColumnElement
 
 from security_log_analyzer.config import Settings
 from security_log_analyzer.detection import RULES, detect
 from security_log_analyzer.models import Event, Severity, Status
 from security_log_analyzer.storage import (
+    AlertAlias,
     AlertRow,
     AnalysisAlert,
     AnalysisRun,
@@ -47,6 +49,15 @@ class Filters:
         if self.source_type is not None and self.source_type not in {"ssh", "http"}:
             raise ValueError("Source type must be ssh or http")
 
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            **asdict(self),
+            "start": iso(self.start) if self.start else None,
+            "end": iso(self.end) if self.end else None,
+            "severity": self.severity.value if self.severity else None,
+            "status": self.status.value if self.status else None,
+        }
+
 
 DEFAULT_FILTERS = Filters()
 
@@ -67,6 +78,14 @@ def _conditions(filters: Filters, alerts: bool = False) -> list[ColumnElement[bo
     if filters.source_ip:
         conditions.append(ip == filters.source_ip)
     if alerts:
+        if filters.source_type:
+            conditions.append(
+                AlertRow.id.in_(
+                    select(Evidence.alert_id)
+                    .join(EventRow, EventRow.id == Evidence.event_id)
+                    .where(EventRow.source_type == filters.source_type)
+                )
+            )
         if filters.severity:
             conditions.append(AlertRow.severity == filters.severity.value)
         if filters.status:
@@ -116,6 +135,17 @@ def alert_dict(row: AlertRow) -> dict[str, Any]:
     return {column.name: getattr(row, column.name) for column in AlertRow.__table__.columns}
 
 
+def _find_alert(session: Session, alert_id: str) -> AlertRow:
+    row = session.get(AlertRow, alert_id)
+    if row is None:
+        alias = session.get(AlertAlias, alert_id)
+        if alias:
+            row = session.get(AlertRow, alias.alert_id)
+    if row is None:
+        raise ValueError("Alert identifier was not found")
+    return row
+
+
 def alert_page(
     store: Store, filters: Filters = DEFAULT_FILTERS, limit: int = 100, offset: int = 0
 ) -> tuple[int, list[dict[str, Any]]]:
@@ -158,9 +188,8 @@ def event_references(store: Store, event_id: str, limit: int = 100) -> dict[str,
 def alert_detail(store: Store, alert_id: str, limit: int = 100, offset: int = 0) -> dict[str, Any]:
     _page(limit, offset)
     with store.session() as session:
-        row = session.get(AlertRow, alert_id)
-        if row is None:
-            raise ValueError("Alert identifier was not found")
+        row = _find_alert(session, alert_id)
+        alert_id = row.id
         evidence = session.scalars(
             select(EventRow)
             .join(Evidence, EventRow.id == Evidence.event_id)
@@ -186,26 +215,27 @@ def alert_detail(store: Store, alert_id: str, limit: int = 100, offset: int = 0)
         }
 
 
-def update_status(store: Store, alert_id: str, status: Status, note: str = "") -> None:
+def update_status(store: Store, alert_id: str, status: Status, note: str = "") -> bool:
     if not isinstance(status, Status):
         raise ValueError("A valid investigation status is required")
     with store.session.begin() as session:
-        row = session.get(AlertRow, alert_id)
-        if row is None:
-            raise ValueError("Alert identifier was not found")
-        if row.status != status.value:
+        row = _find_alert(session, alert_id)
+        note = safe_text(note.strip(), 1000)
+        if row.status != status.value or note:
             timestamp = iso(utc_now())
             session.add(
                 StatusChange(
-                    alert_id=alert_id,
+                    alert_id=row.id,
                     previous_status=row.status,
                     status=status.value,
                     changed_at=timestamp,
-                    note=safe_text(note, 1000),
+                    note=note,
                 )
             )
             row.status = status.value
             row.updated_at = timestamp
+            return True
+    return False
 
 
 def analyze(store: Store, settings: Settings, filters: Filters = DEFAULT_FILTERS) -> dict[str, int]:

@@ -7,6 +7,8 @@ from sqlalchemy import JSON, CheckConstraint, ForeignKey, Index, String, create_
 from sqlalchemy.engine import URL, Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
+from security_log_analyzer.migrations import upgrade_ssh_identity
+
 
 class Base(DeclarativeBase):
     pass
@@ -120,6 +122,12 @@ class AnalysisAlert(Base):
     alert_id: Mapped[str] = mapped_column(ForeignKey("alerts.id"), primary_key=True)
 
 
+class AlertAlias(Base):
+    __tablename__ = "alert_aliases"
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    alert_id: Mapped[str] = mapped_column(ForeignKey("alerts.id"), index=True)
+
+
 def _sqlite_setup(connection: Any, _: Any) -> None:
     cursor = connection.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
@@ -130,8 +138,10 @@ def _sqlite_setup(connection: Any, _: Any) -> None:
 def migrate(engine: Engine) -> None:
     """Apply numbered migrations; refuse unknown future schemas."""
     with engine.begin() as connection:
+        # Explicit BEGIN makes SQLite DDL, data transformations and version changes atomic.
+        connection.exec_driver_sql("BEGIN IMMEDIATE")
         version: int = connection.execute(text("PRAGMA user_version")).scalar_one()
-        if version > 2:
+        if version > 3:
             raise ValueError("Database schema is newer than this application")
         if version == 0:
             existing = connection.execute(
@@ -143,12 +153,30 @@ def migrate(engine: Engine) -> None:
                 raise ValueError(
                     "Unrecognized existing database; select a new application database"
                 )
-            names = ("source_files", "ingestion_runs", "events", "source_records", "parse_failures")
+            names: tuple[str, ...] = (
+                "source_files",
+                "ingestion_runs",
+                "events",
+                "source_records",
+                "parse_failures",
+            )
             Base.metadata.create_all(connection, tables=[Base.metadata.tables[n] for n in names])
             connection.execute(text("PRAGMA user_version=1"))
         if version < 2:
-            Base.metadata.create_all(connection)
+            names = (
+                "detection_rules",
+                "analysis_runs",
+                "alerts",
+                "alert_evidence",
+                "status_history",
+                "analysis_alerts",
+            )
+            Base.metadata.create_all(connection, tables=[Base.metadata.tables[n] for n in names])
             connection.execute(text("PRAGMA user_version=2"))
+        if version < 3:
+            Base.metadata.create_all(connection, tables=[Base.metadata.tables["alert_aliases"]])
+            upgrade_ssh_identity(connection, Base.metadata.tables)
+            connection.execute(text("PRAGMA user_version=3"))
 
 
 class Store:

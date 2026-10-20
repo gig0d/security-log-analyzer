@@ -196,10 +196,10 @@ def status_command(
     note: str = "",
     json_output: JsonOutput = False,
 ) -> None:
-    """Persist an investigation status change and an optional bounded note."""
+    """Persist a status change or a note, including notes with an unchanged status."""
     with _operation(db) as store:
-        update_status(store, alert_id, status, note)
-        _emit({"alert_id": alert_id, "status": status.value}, json_output)
+        changed = update_status(store, alert_id, status, note)
+        _emit({"alert_id": alert_id, "status": status.value, "changed": changed}, json_output)
 
 
 @app.command()
@@ -212,10 +212,29 @@ def report(
     filename: str | None = None,
     alert_id: str | None = None,
     json_output: JsonOutput = False,
+    source: str | None = None,
+    ip: str | None = None,
+    severity: Severity | None = None,
+    status: Status | None = None,
+    rule: str | None = None,
+    search: str = "",
 ) -> None:
     """Export a JSON summary/incident or a formula-safe CSV alert summary."""
     with _operation(db) as store:
-        data = build_report(store, _filters(since, until), alert_id)
+        data = build_report(
+            store,
+            _filters(
+                since,
+                until,
+                source_type=source,
+                source_ip=ip,
+                severity=severity,
+                status=status,
+                rule_id=rule,
+                search=search,
+            ),
+            alert_id,
+        )
         target = output_path(output_dir, filename or f"security-report.{format.value}")
         target.write_text(
             report_json(data) if format == ReportFormat.json else report_csv(data),

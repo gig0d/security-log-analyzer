@@ -6,7 +6,7 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, unquote_plus, urlsplit
 
 from security_log_analyzer.config import Settings
 from security_log_analyzer.models import Alert, Event, Severity
@@ -83,13 +83,18 @@ TRAVERSAL = re.compile(r"(?:^|/)\.\.(?:/|$)")
 
 
 def decoded_target(target: str) -> str:
-    # Decode at most twice; never evaluate or fetch a target.
-    return unquote(unquote(target[:16384])).replace("\\", "/").lower()
+    # A literal '+' represents a space only in the query, not in the URL path.
+    path, separator, query = target[:16384].partition("?")
+    decoded = unquote(unquote(path))
+    if separator:
+        decoded += "?" + unquote(unquote_plus(query))
+    return decoded.replace("\\", "/").lower()
 
 
 def target_path(target: str) -> str:
     try:
-        return urlsplit(decoded_target(target)).path
+        path = urlsplit(target[:16384]).path
+        return unquote(unquote(path)).replace("\\", "/").lower()
     except ValueError:
         return ""
 
@@ -112,6 +117,19 @@ def suspicious_indicators(target: str) -> list[str]:
     return indicators
 
 
+def alert_identifier(
+    rule_id: str,
+    event_ids: tuple[str, ...],
+    threshold: int,
+    window_seconds: int,
+    sensitive_paths: tuple[str, ...] | None = None,
+    login_paths: tuple[str, ...] | None = None,
+) -> str:
+    return stable_id(
+        ["rules-v1", rule_id, event_ids, threshold, window_seconds, sensitive_paths, login_paths]
+    )
+
+
 def _alert(
     rule_id: str,
     events: list[Event],
@@ -132,18 +150,16 @@ def _alert(
         "limitation": rule.limitation,
         **(extra or {}),
     }
-    identity = [
-        "rules-v1",
-        rule_id,
-        ids,
-        threshold,
-        settings.window_seconds,
-        settings.sensitive_paths if rule_id == "HTTP_ENUMERATION" else None,
-        settings.login_paths if rule_id == "HTTP_AUTH_ABUSE" else None,
-    ]
     assert events[0].source_ip is not None
     return Alert(
-        id=stable_id(identity),
+        id=alert_identifier(
+            rule_id,
+            ids,
+            threshold,
+            settings.window_seconds,
+            settings.sensitive_paths if rule_id == "HTTP_ENUMERATION" else None,
+            settings.login_paths if rule_id == "HTTP_AUTH_ABUSE" else None,
+        ),
         rule_id=rule_id,
         title=rule.title,
         description=rule.description + " Suspicious evidence requires investigation.",

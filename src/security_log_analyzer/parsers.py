@@ -18,13 +18,13 @@ MONTHS = {
 }
 SSH = re.compile(
     r"^(?P<stamp>\d{4}-\d\d-\d\dT\S+|[A-Z][a-z]{2}\s+\d{1,2} \d\d:\d\d:\d\d) "
-    r"(?P<host>\S+) sshd(?:-session)?\[\d+\]: (?P<body>.+)$"
+    r"(?P<host>\S+) sshd(?:-session)?\[(?P<pid>\d+)\]: (?P<body>.+)$"
 )
 LOGIN = re.compile(
     r"^(?P<result>Failed|Accepted) (?P<mechanism>password|publickey) for "
-    r"(?P<invalid>invalid user )?(?P<username>\S+) from (?P<ip>\S+) port \d+(?: .*)?$"
+    r"(?P<invalid>invalid user )?(?P<username>\S+) from (?P<ip>\S+) port (?P<port>\d+)(?: .*)?$"
 )
-INVALID = re.compile(r"^Invalid user (?P<username>\S+) from (?P<ip>\S+)(?: port \d+)?$")
+INVALID = re.compile(r"^Invalid user (?P<username>\S+) from (?P<ip>\S+)(?: port (?P<port>\d+))?$")
 QUOTED = r'"(?:[^"\\]|\\.)*"'
 HTTP = re.compile(
     r"^(?P<ip>\S+) \S+ (?P<username>\S+) \[(?P<stamp>[^\]]+)\] "
@@ -76,7 +76,14 @@ def parse_ssh(line: str, settings: Settings) -> Event:
         action = "invalid_user"
     if fields is None:
         raise ParseError("Unsupported OpenSSH event")
-    metadata: dict[str, Any] = {"parser": "openssh-v1"}
+    # Keep observed connection/process attributes in identity, even at one-second precision.
+    metadata: dict[str, Any] = {"parser": "openssh-v2", "process_id": match["pid"]}
+    if fields["port"] is not None:
+        port = fields["port"]
+        if len(port) <= 5 and 0 < int(port) <= 65535:
+            metadata["source_port"] = int(port)
+        else:
+            metadata["invalid_source_port"] = safe_text(port, 256)
     if action == "login":
         metadata["mechanism"] = fields["mechanism"]
         metadata["invalid_user"] = bool(fields["invalid"])

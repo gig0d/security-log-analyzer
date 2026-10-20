@@ -13,6 +13,7 @@ No process watches files or collects logs in the background.
 | `ingestion.py` | Explicit discovery, bounded reads, hashing, provenance, deduplication |
 | `detection.py` | Pure event-to-alert rules and stable identifiers |
 | `storage.py` | SQLAlchemy mappings, SQLite foreign keys, numbered migrations |
+| `migrations.py` | SSH identity reconstruction and historical alert aliases |
 | `repository.py` | Bound filters, pagination, SQL aggregates, analysis/status transactions |
 | `reporting.py` | Bounded incident/summary reports and safe CSV |
 | `demo.py` | Fixed synthetic scenarios, separate labels, evidence evaluation |
@@ -74,6 +75,9 @@ the period when necessary. Queries return at most 500 rows; dashboard pages use 
 Reports cap alerts/evidence at 10,000. SQL aggregates can still scan significant
 local data; there is no distributed analytics or throughput guarantee.
 
-Two explicit additive schema migrations are sufficient for this small project.
-Introduce Alembic if later versions require complex column/data transformations.
+Three explicit schema migrations handle the small schema and SSH identity upgrade.
+Migration writes and version changes share an explicit SQLite transaction. Stored
+source records reconstruct legacy connections; old alert references resolve through
+aliases while investigation history is retained. Introduce richer migration tooling
+if later versions require more complex transformations.
 All import/detection/report workflows work without Streamlit.

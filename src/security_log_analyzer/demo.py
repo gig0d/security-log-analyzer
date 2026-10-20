@@ -2,7 +2,7 @@
 
 import json
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -96,8 +96,25 @@ def synthetic_data() -> DemoData:
     return DemoData(
         lines["ssh"],
         lines["http"],
-        {"schema_version": 1, "seed": 42, "reference_utc": REFERENCE.isoformat(), "labels": labels},
+        {"schema_version": 2, "seed": 42, "reference_utc": REFERENCE.isoformat(), "labels": labels},
     )
+
+
+def _legacy_truth(data: DemoData) -> dict[str, Any]:
+    """Recognize only the exact former built-in labels for a safe fixture upgrade."""
+    truth: dict[str, Any] = json.loads(json.dumps(data.truth))
+    truth["schema_version"] = 1
+    for label in truth["labels"]:
+        if label["file"] == "auth.log":
+            record = parse_line(data.ssh[label["line"] - 1], "ssh", Settings())
+            metadata = {
+                key: value
+                for key, value in record.metadata.items()
+                if key not in {"process_id", "source_port"}
+            }
+            metadata["parser"] = "openssh-v1"
+            label["event_id"] = replace(record, metadata=metadata).id
+    return truth
 
 
 def generate(directory: Path) -> dict[str, Any]:
@@ -109,8 +126,17 @@ def generate(directory: Path) -> dict[str, Any]:
     }
     paths = {name: output_path(directory, name) for name in files}
     for name, target in paths.items():
-        if target.exists() and target.read_text(encoding="utf-8") != files[name]:
-            raise ValueError(f"Refusing to overwrite different existing demo input: {name}")
+        if target.exists():
+            if target.stat().st_size > 1048576:
+                raise ValueError(f"Refusing oversized existing demo input: {name}")
+            existing = target.read_text(encoding="utf-8")
+            legacy = (
+                json.dumps(_legacy_truth(data), indent=2) + "\n"
+                if name == "ground-truth.json"
+                else None
+            )
+            if existing != files[name] and existing != legacy:
+                raise ValueError(f"Refusing to overwrite different existing demo input: {name}")
     for name, target in paths.items():
         target.write_text(files[name], encoding="utf-8", newline="\n")
     return data.truth

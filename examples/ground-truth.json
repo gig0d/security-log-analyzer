@@ -1,61 +1,61 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "seed": 42,
   "reference_utc": "2026-01-15T12:00:00+00:00",
   "labels": [
     {
       "file": "auth.log",
       "line": 1,
-      "event_id": "e0eabb8fa10e711ed0caaa862fbf394c379f86d6b0bfdd2453ba1e025b213d03",
+      "event_id": "1c3393107c7bb751fa8ad86920d84aee9a06fea14bc814104acea3edf9888c49",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 2,
-      "event_id": "f46a9e72ba9b560380da3d4eb0a45bf99c52fa480d3f058c1b7b0af48ea25e4c",
+      "event_id": "7ce801b590e566bb080c55802adffeac261688381c2e22a30b55f7cca74fb84b",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 3,
-      "event_id": "04f4b97d7458d6c6d3ef42fc38a4c0932ca356aea25b917cf22b80466d51c3a5",
+      "event_id": "a54947dfba70c7d26d7949f1d8a4d1032b01fe74bb8b0435924a6393a04a5107",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 4,
-      "event_id": "8771f27d0a2a0422596fefd35877cfec9c28edbb10e1513b1cc1e289be0347ca",
+      "event_id": "f2396ffacc24cb1014bbe7725d2945080e2a6ab27ab3310e21a05d834193997f",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 5,
-      "event_id": "7947cce4cc7a6b94a8f8b71b1db66e77dad9b76870812eb30a81a4cc55d5a6ea",
+      "event_id": "3f4a54a6e53be835c0e2283037fdb1bc8eeb1aa406cf8a4510948c511c757a59",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 6,
-      "event_id": "ef8f3c5d2bc00c62573ebb7d23a5021e443aca0ac402c7c720139d95315062c9",
+      "event_id": "f240b9f2eafe0de35bc9a5381905688d9bb24a310c1d7f03f6cbbca39e8111d1",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 7,
-      "event_id": "61cd21306ec8a019894d3dc933882f6fd514fa6407907e789e22f8fda797c057",
+      "event_id": "441d95959e337c565584f4b1db8f1e87b02ebd667b5c35ad2711c37147aa6928",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
     {
       "file": "auth.log",
       "line": 8,
-      "event_id": "ecaa2ecbbf9c237050687b46e06b83637e37cbd2053bfc11d19642e0f1e37e8f",
+      "event_id": "664b9ef31f10717c43cec8b50f698dab97725a0a3647d26e624ce1baf9b2e2aa",
       "scenario": "normal_ssh",
       "expected_rules": []
     },
@@ -202,7 +202,7 @@
     {
       "file": "auth.log",
       "line": 9,
-      "event_id": "f2a7e9e77f6d6868b610f90ced1796780a1b0c9e7bfe96c440b0438c1dbed351",
+      "event_id": "f2774830eee7d5b378bfc8b9720fc994ed13c1290423004137a176431a2b8393",
       "scenario": "ssh_brute_force",
       "expected_rules": [
         "SSH_BRUTE_FORCE"
@@ -211,7 +211,7 @@
     {
       "file": "auth.log",
       "line": 10,
-      "event_id": "f893f9b5113b32179e2c22d4b0245d229d5ae6e09e04a62e880999fd0ac4f352",
+      "event_id": "d780f3461f05421fbf44d4466be8205efbdcd7c4510d7fd7cce9d6af93466b97",
       "scenario": "ssh_password_spray",
       "expected_rules": [
         "SSH_BRUTE_FORCE",
@@ -221,7 +221,7 @@
     {
       "file": "auth.log",
       "line": 11,
-      "event_id": "66a09834c7950ddf129091b1f25c8b462d3a887b063ec9112ec482a43297d9e3",
+      "event_id": "4f51b790b69cc28232aa35a40219c6252f7023a9ee09509b948a2808faa78cbc",
       "scenario": "ssh_brute_force",
       "expected_rules": [
         "SSH_BRUTE_FORCE"
@@ -230,7 +230,7 @@
     {
       "file": "auth.log",
       "line": 12,
-      "event_id": "7a59b37411e70aa424457ada420584636eb9002dea69f5e87631516f6ecd3812",
+      "event_id": "aaeb9e7389c619c9e49a4024521ba34e605280ffe03af4828c4b04491a71397a",
       "scenario": "ssh_password_spray",
       "expected_rules": [
         "SSH_BRUTE_FORCE",
@@ -240,7 +240,7 @@
     {
       "file": "auth.log",
       "line": 13,
-      "event_id": "4de9d0ed6c1854f624d1a719099f26c15856c57f5fe11e57a05f8dadfaaa689a",
+      "event_id": "1361be13311b3edd2ce9d7d94ceb41e4ed741f422e518de9a1fa6fe761153286",
       "scenario": "ssh_brute_force",
       "expected_rules": [
         "SSH_BRUTE_FORCE"
@@ -249,7 +249,7 @@
     {
       "file": "auth.log",
       "line": 14,
-      "event_id": "7fd93d663daae48d40f41ffcc19b0211ad2d19f2d2b554899210cf4517d687d4",
+      "event_id": "f6901baa89cddda5a7c049deeda21b16df4420acf249bc3c55aa8890b12c93b2",
       "scenario": "ssh_password_spray",
       "expected_rules": [
         "SSH_BRUTE_FORCE",
@@ -259,7 +259,7 @@
     {
       "file": "auth.log",
       "line": 15,
-      "event_id": "36510087e18620dc269bbe11732baae1638d7bf077507d7a9f166cc4f770035b",
+      "event_id": "2edc9fa458e075fa6832ed10be523505f46dc3f0a7dfc7458b67459adb29b54c",
       "scenario": "ssh_brute_force",
       "expected_rules": [
         "SSH_BRUTE_FORCE"
@@ -268,7 +268,7 @@
     {
       "file": "auth.log",
       "line": 16,
-      "event_id": "3c0f27f43a7c884fac2fc61902a52d740817a24cb0877f8fc439e44951f9d650",
+      "event_id": "ac20953cf095d8b71f6a253c6b983ce7730ad23827eaa26b7632ca09bcb218c8",
       "scenario": "ssh_password_spray",
       "expected_rules": [
         "SSH_BRUTE_FORCE",
@@ -278,7 +278,7 @@
     {
       "file": "auth.log",
       "line": 17,
-      "event_id": "82fd1db057c89cfb937ba077c16438cc7c5aae585d0688c652fffac2e7dcbe41",
+      "event_id": "265bad72417542dfd30e2e04801f9dc3a75ec99c69abb942323f93417186c745",
       "scenario": "ssh_brute_force",
       "expected_rules": [
         "SSH_BRUTE_FORCE"
@@ -287,7 +287,7 @@
     {
       "file": "auth.log",
       "line": 18,
-      "event_id": "8bad3ca155cbc2cf24e1c0976ca01638e056a00e5dc4c094e6fa67dd82da2a6f",
+      "event_id": "19ecf32a3c05225b07aa98e89c8cc292a8caac1355f189dc6288758ff3971839",
       "scenario": "ssh_password_spray",
       "expected_rules": [
         "SSH_BRUTE_FORCE",
@@ -297,7 +297,7 @@
     {
       "file": "auth.log",
       "line": 19,
-      "event_id": "c87e6435232ada4831e451ecb6cc67bac6d104b302a4eaa75960b001a0f99628",
+      "event_id": "7bcd4d86e5a2f8d0a218fcdcba580fdaf2766900d59d0cf0b850fb383857bce6",
       "scenario": "ssh_success_after_failure",
       "expected_rules": [
         "SSH_SUCCESS_AFTER_FAILURE"
@@ -306,7 +306,7 @@
     {
       "file": "auth.log",
       "line": 20,
-      "event_id": "f437be7976b023c236c76a0aff850acd2d7da123b156ddc6a3a9088b93650056",
+      "event_id": "228a0e3cc2a13e78d5597d71dc21998ada67c4caed2870d931e15717ca08e884",
       "scenario": "ssh_success_after_failure",
       "expected_rules": [
         "SSH_SUCCESS_AFTER_FAILURE"
@@ -315,7 +315,7 @@
     {
       "file": "auth.log",
       "line": 21,
-      "event_id": "d409bc7b3284f203a357c3672ff09e3a1d7acae160147b2b188a72d72d6db218",
+      "event_id": "19cef0180b2e3464f5effc2301bf599ac99952ed8b6253d63b4a33f503742ce2",
       "scenario": "ssh_success_after_failure",
       "expected_rules": [
         "SSH_SUCCESS_AFTER_FAILURE"
@@ -324,7 +324,7 @@
     {
       "file": "auth.log",
       "line": 22,
-      "event_id": "4f44843ffd30dc509ee53c39bd4e5b6b5d6feede585171d38a386a755eefa298",
+      "event_id": "3e72aeec01e9ea82293fbd474d5dd74907c979163687e466108ba215d86efece",
       "scenario": "ssh_success_after_failure",
       "expected_rules": [
         "SSH_SUCCESS_AFTER_FAILURE"

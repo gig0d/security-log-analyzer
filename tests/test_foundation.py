@@ -14,7 +14,7 @@ def test_schema_migration_is_reproducible(tmp_path):
     for _ in range(2):
         store = Store(path)
         with store.engine.connect() as connection:
-            assert connection.execute(text("PRAGMA user_version")).scalar_one() == 2
+            assert connection.execute(text("PRAGMA user_version")).scalar_one() == 3
             assert connection.execute(text("PRAGMA foreign_keys")).scalar_one() == 1
         store.close()
 

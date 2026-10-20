@@ -158,10 +158,36 @@ flowchart LR
 
 Python 3.13; standard-library dataclasses, regex, `ipaddress`, `zoneinfo`, and TOML;
 SQLAlchemy/SQLite; Typer/Rich; Streamlit/Plotly; Pytest/pytest-cov; Ruff; MyPy.
-Domain validation and two numbered additive migrations keep Pydantic/Alembic
+Domain validation and explicit numbered migrations keep Pydantic/Alembic
 unnecessary for this schema. Application analytics use SQL aggregates; pandas is
 a Streamlit transitive dependency. Exact dependencies live in `uv.lock` and
 the exported hash-locked `requirements-dev.lock`.
+
+## Upgrading from 1.0.0
+
+Back up a closed database before upgrading. Schema version 3 reconstructs SSH
+events from their stored source records, preserving observed ports and sshd PIDs
+so distinct attempts in the same second are not collapsed. It does not reread
+original log files. Existing investigation states, notes, detection timestamps,
+and analysis associations are retained; former alert IDs remain usable aliases
+for `show`, `status`, and incident reports. The migration rolls back on failure.
+
+The built-in demo upgrades its exact former ground-truth manifest automatically;
+different user inputs remain protected. Recovered attempts may produce additional
+alerts on the next detection run. Historical alerts keep representative evidence
+and remain available for investigation.
+
+Notes can now be saved without changing an investigation status. Empty same-status
+saves report no change. HTTP query matching recognizes literal `+` as a space while
+preserving plus signs in paths and percent-encoded literal plus signs.
+
+Report JSON includes every requested filter and explains which filters/search
+fields apply to events and alerts. CSV includes the same context in `report_filters`.
+For example:
+
+```powershell
+& $sla report --db data/demo.db --source http --severity MEDIUM --search Suspicious --filename http.json
+```
 
 ## Testing
 
@@ -174,7 +200,7 @@ the exported hash-locked `requirements-dev.lock`.
 .\.venv\Scripts\python.exe -m pytest --cov --cov-report=term-missing --cov-report=xml
 ```
 
-Local Windows validation on Python 3.13.16: **73 passed, 1 skipped; 94% combined
+Local Windows validation on Python 3.13.16: **97 passed, 1 skipped; 95% combined
 statement/branch coverage**. The symbolic-link test requires Windows developer mode
 or suitable rights; Linux CI exercises it. Streamlit AppTest covers navigation,
 filtering, empty/error states, and persisted status changes. A clean wheel

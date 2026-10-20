@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "security-log-analyzer"
-version = "1.0.0"
+version = "1.0.1"
 description = "Local defensive SSH and HTTP log analysis with evidence-linked alerts"
 readme = "README.md"
 requires-python = ">=3.13"

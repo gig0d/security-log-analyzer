@@ -149,11 +149,17 @@ def security_alerts(store: Store, period: Filters) -> None:
         new_status = st.selectbox(
             "Set investigation status", choices, index=choices.index(detail["status"])
         )
-        note = st.text_area("Investigation note", max_chars=1000)
+        note = st.text_area(
+            "Investigation note",
+            max_chars=1000,
+            help="Notes are saved even when the status stays unchanged.",
+        )
         if st.form_submit_button("Save status"):
-            update_status(store, selected, Status(new_status), note)
-            st.session_state["status_notice"] = "Investigation status saved."
-            st.rerun()
+            if update_status(store, selected, Status(new_status), note):
+                st.session_state["status_notice"] = "Investigation update saved."
+                st.rerun()
+            else:
+                st.info("No changes to save.")
     st.subheader("Evidence events")
     _table(
         detail["evidence"],
@@ -171,7 +177,7 @@ def security_alerts(store: Store, period: Filters) -> None:
     if detail["evidence"]:
         event_id = st.selectbox("Inspect evidence record", [e["id"] for e in detail["evidence"]])
         st.json(event_references(store, event_id))
-    with st.expander("Investigation history (latest 100 changes)"):
+    with st.expander("Investigation history (latest 100 entries)"):
         st.dataframe(detail["history"], hide_index=True, width="stretch")
 
 
@@ -240,6 +246,24 @@ def detection_rules(settings: Settings) -> None:
 def reports(store: Store, filters: Filters) -> None:
     st.title("Reports")
     st.caption("Export reproducible summaries or a self-contained incident with its evidence.")
+    with st.expander("Report filters"):
+        columns = st.columns(3)
+        source = columns[0].selectbox("Report source", ["All", "ssh", "http"])
+        severity = columns[1].selectbox("Report severity", ["All", *[s.value for s in Severity]])
+        status = columns[2].selectbox("Report status", ["All", *[s.value for s in Status]])
+        rule = st.selectbox("Report rule", ["All", *[r.id for r in RULES]])
+        ip = st.text_input("Report source IP", max_chars=64)
+        search = st.text_input("Report search", max_chars=200)
+    filters = Filters(
+        start=filters.start,
+        end=filters.end,
+        source_type=source if source != "All" else None,
+        severity=Severity(severity) if severity != "All" else None,
+        status=Status(status) if status != "All" else None,
+        rule_id=rule if rule != "All" else None,
+        source_ip=ip or None,
+        search=search,
+    )
     report_type = st.radio("Report scope", ["Summary", "Incident"], horizontal=True)
     alert_id = (
         st.text_input("Incident alert ID", max_chars=64) if report_type == "Incident" else None
@@ -252,6 +276,8 @@ def reports(store: Store, filters: Filters) -> None:
         {
             "data_source": data["data_source"],
             "period": data["period"],
+            "filters": data["filters"],
+            "filter_scope": data["filter_scope"],
             "events": data["statistics"]["events"],
             "alerts": data["statistics"]["alerts"],
         }

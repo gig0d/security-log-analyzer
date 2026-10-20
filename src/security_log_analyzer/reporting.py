@@ -49,11 +49,24 @@ def build_report(
             "observed_event_end": period[1],
             "semantics": "Inclusive UTC event timestamps and alert first-seen timestamps",
         },
-        "filters": {
-            "source_ip": filters.source_ip,
-            "severity": filters.severity,
-            "status": filters.status,
-            "rule_id": filters.rule_id,
+        "filters": filters.to_dict(),
+        "filter_scope": {
+            "events": ["start", "end", "source_ip", "source_type", "search"],
+            "alerts": [
+                "start",
+                "end",
+                "source_ip",
+                "source_type",
+                "severity",
+                "status",
+                "rule_id",
+                "search",
+            ],
+            "search_fields": {
+                "events": ["id", "username", "path"],
+                "alerts": ["id", "title", "source_ip"],
+            },
+            "source_type": "Alerts are matched through their evidence events",
         },
         "statistics": statistics(store, filters),
         "interpretation": "Alerts indicate suspicious evidence, not confirmed malicious activity.",
@@ -104,6 +117,7 @@ def report_csv(report: dict[str, Any]) -> str:
         "data_source",
         "report_start",
         "report_end",
+        "report_filters",
     ]
     writer = csv.DictWriter(stream, fieldnames=fields)
     writer.writeheader()
@@ -116,6 +130,7 @@ def report_csv(report: dict[str, Any]) -> str:
             or report["period"]["observed_event_start"],
             "report_end": report["period"]["requested_end"]
             or report["period"]["observed_event_end"],
+            "report_filters": json.dumps(report["filters"], sort_keys=True, ensure_ascii=True),
         }
         writer.writerow({field: csv_cell(values.get(field)) for field in fields})
     return stream.getvalue()
